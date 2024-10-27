@@ -1,8 +1,13 @@
+import Ajv from 'ajv';
 import {
 	DEFAULT_USERNOTE_TYPES,
 	migrateConfigToLatestSchema,
 } from '../helpers/config';
-import {RawSubredditConfig, RawUsernoteType} from '../types/RawSubredditConfig';
+import {
+	CONFIG_SCHEMA,
+	RawSubredditConfig,
+	RawUsernoteType,
+} from '../types/RawSubredditConfig';
 
 // type imports for doc references
 import type {Usernote} from '../types/Usernote';
@@ -17,6 +22,23 @@ export class SubredditConfig {
 
 	constructor (jsonString: string) {
 		this.data = migrateConfigToLatestSchema(JSON.parse(jsonString));
+		this.validateConfig();
+	}
+
+	private validateConfig () {
+		const ajv = new Ajv({coerceTypes: true});
+		const validator = ajv.compile(CONFIG_SCHEMA);
+
+		if (!validator(this.data)) {
+			throw new Error(ajv.errorsText(validator.errors));
+		}
+
+		// AJV coerces to null, not undefined.
+		for (const prop in this.data) {
+			if (this.data[prop] === null) {
+				this.data[prop] = undefined;
+			}
+		}
 	}
 
 	/** Returns all usernote types. */

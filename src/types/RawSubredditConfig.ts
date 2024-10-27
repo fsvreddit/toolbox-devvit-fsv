@@ -1,8 +1,11 @@
 // type imports for doc links
-import type {
+import {
+	EARLIEST_KNOWN_CONFIG_SCHEMA,
 	LATEST_KNOWN_CONFIG_SCHEMA,
-	migrateConfigToLatestSchema,
+	type migrateConfigToLatestSchema,
 } from '../helpers/config';
+// type imports for JSON schema
+import {JSONSchemaType} from 'ajv';
 
 /**
  * Raw data stored as JSON on the `toolbox` wiki page.
@@ -18,16 +21,11 @@ export interface RawSubredditConfig {
 	/** The version number of the config schema this data conforms to */
 	ver: 1;
 	/** Settings for individual domain tags */
-	domainTags: RawDomainTag[];
+	domainTags?: RawDomainTag[];
 	/** Default settings for banning users via the mod button */
-	banMacros: {
-		/** The default mod-only ban note */
-		banNote: string;
-		/** The default message sent to banned users */
-		banMessage: string;
-	};
+	banMacros?: RawBanMacro;
 	/** Settings for removal reasons */
-	removalReasons: {
+	removalReasons?: {
 		/** Header text for removal messages (may include tokens) */
 		header: string;
 		/** Footer text for removal messages (may include tokens) */
@@ -53,7 +51,7 @@ export interface RawSubredditConfig {
 		 * Unimplemented - Toolbox itself does nothing with this key
 		 * @deprecated
 		 */
-		bantitle: unknown;
+		bantitle: string;
 		/**
 		 * Name of another subreddit to fetch removal reasons from, instead of
 		 * using the reasons defined in this config, or an empty string for none
@@ -108,9 +106,9 @@ export interface RawSubredditConfig {
 		reasons: RawRemovalReason[];
 	};
 	/** Settings for individual mod macros */
-	modMacros: RawModMacro[];
+	modMacros?: RawModMacro[];
 	/** Settings for individual usernote types */
-	usernoteColors: RawUsernoteType[];
+	usernoteColors?: RawUsernoteType[];
 }
 
 export interface RawDomainTag {
@@ -118,6 +116,13 @@ export interface RawDomainTag {
 	name: string;
 	/** A CSS color value */
 	color: string;
+}
+
+export interface RawBanMacro {
+	/** The default mod-only ban note */
+	banNote: string;
+	/** The default message sent to banned users */
+	banMessage: string;
 }
 
 export interface RawRemovalReason {
@@ -178,3 +183,160 @@ export interface RawUsernoteType {
 	/** Displayed text of the note type */
 	text: string;
 }
+
+/** JSON schema representing the RawSubredditConfig interface */
+export const CONFIG_SCHEMA: JSONSchemaType<RawSubredditConfig> = {
+	type: 'object',
+	properties: {
+		ver: {
+			type: 'number',
+			minimum: EARLIEST_KNOWN_CONFIG_SCHEMA,
+			maximum: LATEST_KNOWN_CONFIG_SCHEMA,
+			nullable: false,
+		},
+		domainTags: {
+			type: 'array',
+			items: {
+				type: 'object',
+				properties: {
+					name: {type: 'string'},
+					color: {type: 'string'},
+				},
+				required: ['name', 'color'],
+				additionalProperties: false,
+			},
+			nullable: true,
+			default: undefined,
+		},
+		banMacros: {
+			type: 'object',
+			properties: {
+				banNote: {type: 'string'},
+				banMessage: {type: 'string'},
+			},
+			nullable: true,
+			required: ['banNote', 'banMessage'],
+			additionalProperties: false,
+		},
+		removalReasons: {
+			type: 'object',
+			properties: {
+				header: {type: 'string'},
+				footer: {type: 'string'},
+				pmsubject: {type: 'string'},
+				logreason: {type: 'string'},
+				logsub: {type: 'string'},
+				logtitle: {type: 'string'},
+				bantitle: {type: 'string'},
+				getfrom: {type: 'string'},
+				removalOption: {
+					type: 'string',
+					enum: ['suggest', 'leave', 'force'],
+				},
+				typeReply: {
+					type: 'string',
+					enum: ['reply', 'pm', 'both', 'none'],
+				},
+				typeStickied: {type: 'boolean'},
+				typeCommentAsSubreddit: {type: 'boolean'},
+				typeLockThread: {type: 'boolean'},
+				typeLockComment: {type: 'boolean'},
+				typeAsSub: {type: 'boolean'},
+				autoArchive: {type: 'boolean'},
+				reasons: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							title: {type: 'string'},
+							text: {type: 'string'},
+							flairText: {type: 'string'},
+							flairCSS: {type: 'string'},
+							removePosts: {type: 'boolean'},
+							removeComments: {type: 'boolean'},
+						},
+						required: [
+							'title',
+							'text',
+							'flairText',
+							'flairCSS',
+							'removePosts',
+							'removeComments',
+						],
+						additionalProperties: false,
+					},
+				},
+			},
+			required: [
+				'header',
+				'footer',
+				'pmsubject',
+				'logreason',
+				'logsub',
+				'logtitle',
+				'bantitle',
+				'getfrom',
+				'removalOption',
+				'typeReply',
+				'typeStickied',
+				'typeCommentAsSubreddit',
+				'typeLockThread',
+				'typeLockComment',
+				'typeAsSub',
+				'autoArchive',
+				'reasons',
+			],
+			nullable: true,
+		},
+		modMacros: {
+			type: 'array',
+			items: {
+				type: 'object',
+				properties: {
+					title: {type: 'string'},
+					text: {type: 'string'},
+					distinguish: {type: 'boolean'},
+					ban: {type: 'boolean'},
+					mute: {type: 'boolean'},
+					remove: {type: 'boolean'},
+					appprove: {type: 'boolean'},
+					lockthread: {type: 'boolean'},
+					sticky: {type: 'boolean'},
+					archivemodmail: {type: 'boolean'},
+					highlightmodmail: {type: 'boolean'},
+				},
+				required: [
+					'title',
+					'text',
+					'distinguish',
+					'ban',
+					'mute',
+					'remove',
+					'appprove',
+					'lockthread',
+					'sticky',
+					'archivemodmail',
+					'highlightmodmail',
+				],
+				additionalProperties: false,
+			},
+			nullable: true,
+		},
+		usernoteColors: {
+			type: 'array',
+			items: {
+				type: 'object',
+				properties: {
+					key: {type: 'string'},
+					color: {type: 'string'},
+					text: {type: 'string'},
+				},
+				required: ['key', 'color', 'text'],
+				additionalProperties: false,
+			},
+			nullable: true,
+		},
+	},
+	required: ['ver'],
+	additionalProperties: false,
+};

@@ -35,6 +35,7 @@
 		"typescript": "^5.1.3"
 	},
 	"dependencies": {
+		"ajv": "^8.17.1",
 		"pako": "^1.0.11"
 	},
 	"ava": {
