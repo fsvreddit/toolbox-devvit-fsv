@@ -151,6 +151,52 @@ test('getBanMacro: returns undefined if no macro configured', t => {
 	t.is(macroFromConfig, undefined);
 });
 
+test('getRemovalReasonSettings: returns specified configuration', t => {
+	const myConfig: RawSubredditConfig = {
+		ver: 1,
+		removalReasons: {
+			header: 'Header',
+			footer: 'Footer',
+			pmsubject: 'PM Subject',
+			logreason: '',
+			logsub: '',
+			logtitle: '',
+			bantitle: '',
+			getfrom: 'mildlyinteresting',
+			removalOption: 'force',
+			typeReply: 'both',
+			typeStickied: true,
+			typeCommentAsSubreddit: true,
+			typeLockThread: true,
+			typeLockComment: true,
+			typeAsSub: true,
+			autoArchive: true,
+			reasons: [
+				{
+					title: 'A',
+					text: 'B',
+					flairCSS: 'C',
+					flairText: 'D',
+					removeComments: true,
+					removePosts: true,
+				},
+			],
+		},
+	};
+
+	const config = new SubredditConfig(JSON.stringify(myConfig));
+	const reasons = config.getRemovalReasonSettings();
+
+	for (const key in myConfig.removalReasons) {
+		if (key !== 'reasons') {
+			t.is(reasons[key], myConfig.removalReasons[key]);
+		}
+	}
+
+	// Confirm that there is no "reasons" property on the new object.
+	t.is(reasons['reasons'], undefined);
+});
+
 test('getRemovalReasons: returns configured reasons', t => {
 	const myConfig: RawSubredditConfig = {
 		ver: 1,
@@ -187,7 +233,7 @@ test('getRemovalReasons: returns configured reasons', t => {
 	const config = new SubredditConfig(JSON.stringify(myConfig));
 	const reasons = config.getRemovalReasons();
 
-	t.deepEqual(reasons, myConfig.removalReasons);
+	t.deepEqual(reasons, myConfig.removalReasons?.reasons);
 });
 
 test('getRemovalReasons: returns default data when not configured', t => {
@@ -198,7 +244,7 @@ test('getRemovalReasons: returns default data when not configured', t => {
 	const config = new SubredditConfig(JSON.stringify(myConfig));
 	const reasons = config.getRemovalReasons();
 
-	t.deepEqual(reasons, DEFAULT_REMOVAL_REASONS);
+	t.deepEqual(reasons, []);
 });
 
 test('getModMacros: returns configured macros', t => {
@@ -226,7 +272,6 @@ test('getModMacros: returns configured macros', t => {
 		t.fail('Unexpected undefined mod macros in test config');
 		return;
 	}
-	expected[0].text = unescape(expected[0].text);
 
 	const config = new SubredditConfig(JSON.stringify(myConfig));
 	const macros = config.getModMacros();

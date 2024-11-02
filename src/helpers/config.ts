@@ -1,4 +1,8 @@
-import {RawSubredditConfig, RawUsernoteType} from '../types/RawSubredditConfig';
+import {
+	RawRemovalReasonSettings,
+	RawSubredditConfig,
+	RawUsernoteType,
+} from '../types/RawSubredditConfig';
 
 /**
  * The latest subreddit config schema version that this library can handle. If a
@@ -40,10 +44,10 @@ export const DEFAULT_CONFIG = {
 };
 
 /**
- * Default removal reasons settings and values to use if subreddit has not
+ * Default removal reasons settings to use if subreddit has not
  * configured any yet.
  */
-export const DEFAULT_REMOVAL_REASONS = {
+export const DEFAULT_REMOVAL_REASONS: RawRemovalReasonSettings = {
 	header: '',
 	footer: '',
 	pmsubject: '',
@@ -60,7 +64,6 @@ export const DEFAULT_REMOVAL_REASONS = {
 	typeLockComment: false,
 	typeAsSub: false,
 	autoArchive: false,
-	reasons: [],
 };
 
 /**

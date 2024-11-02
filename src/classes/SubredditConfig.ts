@@ -6,6 +6,7 @@ import {
 } from '../helpers/config';
 import {
 	CONFIG_SCHEMA,
+	RawRemovalReasonSettings,
 	RawSubredditConfig,
 	RawUsernoteType,
 } from '../types/RawSubredditConfig';
@@ -112,8 +113,43 @@ export class SubredditConfig {
 	}
 
 	/**
-	 * Returns the removal reason settings and the reasons themselves for
-	 * the subreddit, with removal reason text unescaped
+	 * Returns the removal reason settings for the subreddit, omitting the
+	 * reasons themselves
+	 * @example Get the removal reasons for the subreddit
+	 * ```ts
+	 * const toolbox = new ToolboxClient(reddit);
+	 * const subreddit = 'mildlyinteresting';
+	 *
+	 * const subConfig = toolbox.getConfig(subreddit);
+	 * const removalReasonSettings = subConfig.getRemovalReasonSettings();
+	 */
+	getRemovalReasonSettings (): RawRemovalReasonSettings {
+		if (!this.data.removalReasons) {
+			return DEFAULT_REMOVAL_REASONS;
+		}
+
+		return {
+			header: this.data.removalReasons.header,
+			footer: this.data.removalReasons.footer,
+			pmsubject: this.data.removalReasons.pmsubject,
+			logreason: this.data.removalReasons.logreason,
+			logsub: this.data.removalReasons.logsub,
+			logtitle: this.data.removalReasons.logtitle,
+			bantitle: this.data.removalReasons.bantitle,
+			getfrom: this.data.removalReasons.getfrom,
+			removalOption: this.data.removalReasons.removalOption,
+			typeReply: this.data.removalReasons.typeReply,
+			typeStickied: this.data.removalReasons.typeStickied,
+			typeCommentAsSubreddit: this.data.removalReasons.typeCommentAsSubreddit,
+			typeLockThread: this.data.removalReasons.typeLockComment,
+			typeLockComment: this.data.removalReasons.typeLockComment,
+			typeAsSub: this.data.removalReasons.typeAsSub,
+			autoArchive: this.data.removalReasons.autoArchive,
+		};
+	}
+
+	/**
+	 * Returns the removal reasons for the subreddit
 	 * @example Get the removal reasons for the subreddit
 	 * ```ts
 	 * const toolbox = new ToolboxClient(reddit);
@@ -125,10 +161,10 @@ export class SubredditConfig {
 	 */
 	getRemovalReasons () {
 		if (!this.data.removalReasons) {
-			return DEFAULT_REMOVAL_REASONS;
+			return [];
 		}
 
-		return this.data.removalReasons ?? DEFAULT_REMOVAL_REASONS;
+		return this.data.removalReasons.reasons;
 	}
 
 	/**
