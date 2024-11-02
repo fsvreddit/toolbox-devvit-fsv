@@ -1,7 +1,7 @@
 import test from 'ava';
 import {
 	DEFAULT_CONFIG,
-	DEFAULT_REMOVAL_REASONS,
+	DEFAULT_REMOVAL_REASON_SETTINGS,
 	DEFAULT_USERNOTE_TYPES,
 } from '../helpers/config';
 import {
@@ -195,6 +195,17 @@ test('getRemovalReasonSettings: returns specified configuration', t => {
 
 	// Confirm that there is no "reasons" property on the new object.
 	t.is(reasons['reasons'], undefined);
+});
+
+test('getRemovalReasonSettings: returns default configuration when not configured', t => {
+	const myConfig: RawSubredditConfig = {
+		ver: 1,
+	};
+
+	const config = new SubredditConfig(JSON.stringify(myConfig));
+	const reasons = config.getRemovalReasonSettings();
+
+	t.deepEqual(reasons, DEFAULT_REMOVAL_REASON_SETTINGS);
 });
 
 test('getRemovalReasons: returns configured reasons', t => {

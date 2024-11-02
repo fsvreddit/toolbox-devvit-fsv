@@ -1,6 +1,6 @@
 import Ajv from 'ajv';
 import {
-	DEFAULT_REMOVAL_REASONS,
+	DEFAULT_REMOVAL_REASON_SETTINGS,
 	DEFAULT_USERNOTE_TYPES,
 	migrateConfigToLatestSchema,
 } from '../helpers/config';
@@ -125,7 +125,7 @@ export class SubredditConfig {
 	 */
 	getRemovalReasonSettings (): RawRemovalReasonSettings {
 		if (!this.data.removalReasons) {
-			return DEFAULT_REMOVAL_REASONS;
+			return DEFAULT_REMOVAL_REASON_SETTINGS;
 		}
 
 		return {

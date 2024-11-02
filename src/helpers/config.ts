@@ -47,7 +47,7 @@ export const DEFAULT_CONFIG = {
  * Default removal reasons settings to use if subreddit has not
  * configured any yet.
  */
-export const DEFAULT_REMOVAL_REASONS: RawRemovalReasonSettings = {
+export const DEFAULT_REMOVAL_REASON_SETTINGS: RawRemovalReasonSettings = {
 	header: '',
 	footer: '',
 	pmsubject: '',
