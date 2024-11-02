@@ -1,5 +1,6 @@
 import Ajv from 'ajv';
 import {
+	DEFAULT_REMOVAL_REASONS,
 	DEFAULT_USERNOTE_TYPES,
 	migrateConfigToLatestSchema,
 } from '../helpers/config';
@@ -77,6 +78,77 @@ export class SubredditConfig {
 	getNoteType (key: string) {
 		const noteTypes = this.getAllNoteTypes();
 		return noteTypes.find(noteType => noteType.key === key);
+	}
+
+	/**
+	 * Returns domain tags configured on the subreddit.
+	 * @example Get all domain tags configured for the subreddit
+	 * ```ts
+	 * const toolbox = new ToolboxClient(reddit);
+	 * const subreddit = 'mildlyinteresting';
+	 *
+	 * const subConfig = toolbox.getConfig(subreddit);
+	 * const tags = subConfig.getDomainTags();
+	 * ```
+	 */
+	getDomainTags () {
+		return this.data.domainTags ?? [];
+	}
+
+	/**
+	 * Returns the ban macro for the subreddit, if configured.
+	 * If no macro is configured, `undefined` is returned.
+	 * @example Get the ban macro for the subreddit
+	 * ```ts
+	 * const toolbox = new ToolboxClient(reddit);
+	 * const subreddit = 'mildlyinteresting';
+	 *
+	 * const subConfig = toolbox.getConfig(subreddit);
+	 * const macro = subConfig.getBanMacro();
+	 * ```
+	 */
+	getBanMacro () {
+		return this.data.banMacros;
+	}
+
+	/**
+	 * Returns the removal reason settings and the reasons themselves for
+	 * the subreddit, with removal reason text unescaped
+	 * @example Get the removal reasons for the subreddit
+	 * ```ts
+	 * const toolbox = new ToolboxClient(reddit);
+	 * const subreddit = 'mildlyinteresting';
+	 *
+	 * const subConfig = toolbox.getConfig(subreddit);
+	 * const removalReasons = subConfig.getRemovalReasons();
+	 * ```
+	 */
+	getRemovalReasons () {
+		if (!this.data.removalReasons) {
+			return DEFAULT_REMOVAL_REASONS;
+		}
+
+		return this.data.removalReasons ?? DEFAULT_REMOVAL_REASONS;
+	}
+
+	/**
+	 * Returns the mod macros for the the subreddit.
+	 * Macros are returned with text unescaped.
+	 * @example Get the mod macros for the subreddit
+	 * ```ts
+	 * const toolbox = new ToolboxClient(reddit);
+	 * const subreddit = 'mildlyinteresting';
+	 *
+	 * const subConfig = toolbox.getConfig(subreddit);
+	 * const modMacros = subConfig.getModMacros();
+	 * ```
+	 */
+	getModMacros () {
+		if (!this.data.modMacros) {
+			return [];
+		}
+
+		return this.data.modMacros;
 	}
 
 	/**

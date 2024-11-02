@@ -163,7 +163,7 @@ export interface RawModMacro {
 	/** If true, the item will be removed */
 	remove: boolean;
 	/** If true, the item will be approved */
-	appprove: boolean;
+	approve: boolean;
 	/** If true, the submission will be locked */
 	lockthread: boolean;
 	/** If true, the reply comment will be stickied */
@@ -299,7 +299,7 @@ export const CONFIG_SCHEMA: JSONSchemaType<RawSubredditConfig> = {
 					ban: {type: 'boolean'},
 					mute: {type: 'boolean'},
 					remove: {type: 'boolean'},
-					appprove: {type: 'boolean'},
+					approve: {type: 'boolean'},
 					lockthread: {type: 'boolean'},
 					sticky: {type: 'boolean'},
 					archivemodmail: {type: 'boolean'},
@@ -312,7 +312,7 @@ export const CONFIG_SCHEMA: JSONSchemaType<RawSubredditConfig> = {
 					'ban',
 					'mute',
 					'remove',
-					'appprove',
+					'approve',
 					'lockthread',
 					'sticky',
 					'archivemodmail',

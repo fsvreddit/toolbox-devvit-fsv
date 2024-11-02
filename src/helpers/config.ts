@@ -40,6 +40,30 @@ export const DEFAULT_CONFIG = {
 };
 
 /**
+ * Default removal reasons settings and values to use if subreddit has not
+ * configured any yet.
+ */
+export const DEFAULT_REMOVAL_REASONS = {
+	header: '',
+	footer: '',
+	pmsubject: '',
+	logreason: '',
+	logsub: '',
+	logtitle: '',
+	bantitle: '',
+	getfrom: '',
+	removalOption: 'suggest',
+	typeReply: 'reply',
+	typeStickied: false,
+	typeCommentAsSubreddit: false,
+	typeLockThread: false,
+	typeLockComment: false,
+	typeAsSub: false,
+	autoArchive: false,
+	reasons: [],
+};
+
+/**
  * Checks the schema version of raw subreddit config data and attempts to update
  * it to the latest known schema version if it's out of date. Throws an error if
  * the data's current schema version is too old or new to handle.
