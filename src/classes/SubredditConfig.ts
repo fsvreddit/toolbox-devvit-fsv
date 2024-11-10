@@ -1,5 +1,6 @@
 import Ajv from 'ajv';
 import {
+	DEFAULT_CONFIG,
 	DEFAULT_REMOVAL_REASON_SETTINGS,
 	DEFAULT_USERNOTE_TYPES,
 	migrateConfigToLatestSchema,
@@ -22,8 +23,13 @@ import type {Usernote} from '../types/Usernote';
 export class SubredditConfig {
 	private data: RawSubredditConfig;
 
-	constructor (jsonString: string) {
-		this.data = migrateConfigToLatestSchema(JSON.parse(jsonString));
+	constructor (jsonString?: string) {
+		if (jsonString) {
+			this.data = migrateConfigToLatestSchema(JSON.parse(jsonString));
+		} else {
+			// TODO: the default config value isn't actually typed correctly, this needs to be cleaned up eventually
+			this.data = DEFAULT_CONFIG as unknown as RawSubredditConfig;
+		}
 		this.validateConfig();
 	}
 

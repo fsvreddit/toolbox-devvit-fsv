@@ -1,6 +1,6 @@
 {
 	"name": "toolbox-devvit",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"description": "Helpers for working with /r/toolbox data from Devvit community apps.",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -24,7 +24,7 @@
 	"homepage": "https://github.com/toolbox-team/toolbox-devvit#readme",
 	"devDependencies": {
 		"@ava/typescript": "^4.0.0",
-		"@devvit/public-api": "^0.10.0",
+		"@devvit/public-api": "^0.11.2",
 		"@types/node": "^13.7.4",
 		"ava": "^5.3.0",
 		"dprint": "^0.40.2",
